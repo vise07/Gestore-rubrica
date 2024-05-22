@@ -1,0 +1,447 @@
+/*
+CONSEGNA:
+
+Progettare un software che permetta ad un utente di poter gestire la propria rubrica telefonica, permettendo, tramite l’inserimento di un’apposita password, di visualizzare anche eventuali contatti nascosti.
+
+   Un contatto nascosto può essere reso sempre visibile e viceversa.
+
+   Gestire la lista delle ultime chiamate, in modo che possa essere coerente con quanto sopra richiesto
+
+   Scrivere il codice (java-like) di una parte saliente del software, motivandone la scelta.
+
+
+
+INFORMAZIONI/PASSAGGI FONDAMENTALI PER LA RISOLUZIONE E COMPRENSIONE DELL'ESERCIZIO:
+
+1_ impostazione password e controllo per poter accedere al gestore della rubrica
+2_ opzioni del menu
+3_ ciclo do-while per inserire tot. volte la scelta dell'utente in base al menu -->
+4_ switch case per far inserire la scelta dell'utente, (nei "case" saranno invocati i metodi)
+
+
+
+I TIPI DI METODI:
+
+1) inserimento --> contatto "case 1" e chiamate "case 6" (2 metodi)
+2) elimina --> contatto "case 2" e chiamate "case 7" (2 metodi)
+3) visualizza --> contatto "case 3" e chiamate "case 8" (2 metodi)
+4) nasondi --> contatto "case 4" (1 metodo)
+5) mostra --> contatto "case 5" (1 metodo)
+*/
+
+import java.util.Scanner;
+import static Tools.Utility.*;
+
+
+public class Main {
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        String passwordImpostata;
+        String password;
+
+        //Impostazione password
+        System.out.println("Imposta la password per poter gestire la tua rubrica: ");
+        passwordImpostata = sc.nextLine();
+
+        //Controllo password per accedere alla rubrica
+        System.out.println("Per accedere alla rubrica inserisci la password: ");
+        password = sc.nextLine();
+
+        //if per il controllo che le due password sono uguali
+        if (passwordImpostata.equals(password)) {
+
+            int contacontatti = 0;
+            int contachiamate = 0;
+
+            //variabile booleana che servirà poi nel ciclo do-while per poter uscire (Fine programma)
+            boolean uscita = false;
+
+            final int maxcontatti = 100;
+            final int maxchiamate = 100;
+
+            Contatto[] gestore = new Contatto[maxcontatti];
+            Chiamate[] gestione = new Chiamate[maxchiamate];
+
+            //Stampa del menu
+            String[] opzioni = {"Gestore rubrica", "1-Inserimento contatto", "2-Elimina contatto", "3-Visualizza Contatti", "4-Nascondi un contatto", "5-Mostra un contatto", "6-Inserisci chiamata", "7-Elimina chiamata", "8-Visualizza chiamate", "9-Fine"};
+
+            //Ciclo do-while per inserire più volte una scelta del menu
+            do {
+
+                //Switch case per selezionare la scelta dell'utente
+                switch (menu(opzioni, sc)) {
+
+                    //Inserimento nuovo contatto
+                    case 1:
+
+                        if (contacontatti < maxcontatti) {
+
+                            Contatto nuovoContatto = InserisciContatto(sc);
+
+                            gestore[contacontatti] = nuovoContatto;
+
+                            contacontatti++;
+
+                        } else {
+
+                            System.out.println("Non ci sono più contatti da inserire");
+
+                        }
+
+                        break;
+
+                    //Eliminazione di un contatto a scelta, deciso dall'utente
+                    case 2:
+
+                        if (contacontatti > 0) {
+
+                            eliminaContatto(gestore, contacontatti, sc);
+
+                            contacontatti--;
+
+                        } else {
+
+                            System.out.println("Non ci sono contatti da eliminare");
+
+                        }
+
+                        break;
+
+                    //Visualizzazione di tutti i contatti
+                    case 3:
+
+                        if (contacontatti > 0) {
+
+                            visualizzaContatti(gestore, contacontatti);
+
+                        } else {
+
+                            System.out.println("Non ci sono contatti da visualizzare");
+
+                        }
+
+                        break;
+
+                    //Nascondi contatto
+                    case 4:
+
+                        if (contacontatti > 0) {
+
+                            nascondiContatto(gestore, contacontatti, sc);
+
+                        } else {
+
+                            System.out.println("Non ci sono contatti da nascondere");
+
+                        }
+
+                        break;
+
+                    //mostra contatto
+                    case 5:
+
+                        if (contacontatti > 0) {
+
+                            mostraContatto(gestore, contacontatti, sc);
+
+                        } else {
+
+                            System.out.println("Non ci sono contatti da mostrare");
+
+                        }
+
+                        break;
+
+                    //Inserimento nuova chiamata
+                    case 6:
+
+                        if (contachiamate < maxchiamate) {
+
+                            Chiamate nuovoChiamate = InserisciChiamate(sc);
+
+                            gestione[contachiamate] = nuovoChiamate;
+
+                            contachiamate++;
+
+                        } else {
+
+                            System.out.println("Non ci sono più chiamate da inserire");
+
+                        }
+
+                        break;
+
+                    //Eliminazione di una chiamata a scelta, decisa dall'utente
+                    case 7:
+
+                        if (contachiamate > 0) {
+
+                            eliminaChiamate(gestione, contachiamate, sc);
+
+                            contachiamate--;
+
+                        } else {
+
+                            System.out.println("Non ci sono chiamate da eliminare");
+
+                        }
+
+                        break;
+
+                    //Visualizzazione di tutte le chiamate
+                    case 8:
+
+                        if (contachiamate > 0) {
+
+                            visualizzaChiamate(gestione, contachiamate);
+
+                        } else {
+
+                            System.out.println("Non ci sono chiamate da visualizzare");
+
+                        }
+
+                        break;
+
+                    //Fine del programma
+                    case 9:
+
+                        uscita = true;
+
+                        break;
+
+                }
+
+            } while (!uscita);
+
+            System.out.println("Fine programma");
+
+        } else {
+            System.out.println("Hai inserito la password sbagliata");
+        }
+    }
+
+
+
+    //Metodo che permette di inserire un nuovo contatto
+    public static Contatto InserisciContatto(Scanner sc) {
+
+        //Creazione di un nuovo contatto e inserimento dei suoi dati
+        Contatto contatto = new Contatto();
+
+        System.out.println("Inserici il nome");
+        contatto.nome = sc.nextLine();
+
+        System.out.println("Inserici il numero di telefono");
+        contatto.numDiTelefono = sc.nextLine();
+
+        String[] opzioni = {"TipoContatto", "1-mostrato", "2-nascosto"};
+
+        int scelta;
+
+        //ciclo do-while che si ripete fino a che l'utente non sceglie una opzione corretta fra le due
+        do {
+
+            scelta = menu(opzioni, sc);
+
+            //switch case per far inserire la scelta dell'utente
+            switch (scelta) {
+
+                case 1 -> contatto.tipo = Tipologia.mostrato;
+
+                case 2 -> contatto.tipo = Tipologia.nascosto;
+
+            }
+
+        } while (scelta > 2 || scelta < 1);
+
+        return contatto;
+    }
+
+
+
+    //Metodo che permette di eliminare un contatto
+    public static void eliminaContatto(Contatto[] gestore, int contacontatti, Scanner sc) {
+
+        //Inserimento del nome del contatto che si intende eliminare
+        System.out.println("Inserisci il nome del contatto che vuoi eliminare: ");
+
+        String[] nome = sc.nextLine().split(" ");
+
+        //Ciclo for che scorre l'array fino a che trova la corrispondenza col nome
+        for (int i = 0; i < contacontatti; i++) {
+
+            if (gestore[i].nome.equals(nome[0])) {
+
+                System.out.println("Contatto eliminato:");
+
+                System.out.println(gestore[i].anagrafica());
+
+                //Impostazione della chiamata a null
+                gestore[i] = null;
+
+                return;
+            }
+        }
+
+        System.out.println("Nessun contatto trovato con il nome inserito.");
+
+    }
+
+
+
+    //Metodo che permette di visualizzare tutti i contatti
+    public static void visualizzaContatti(Contatto[] gestore, int contacontatti) {
+
+        //Ciclo for che scorre l'array leggendo l'anagrafica di ogni contatto disponibile
+        for (int i = 0; i < contacontatti; i++) {
+
+            System.out.println(gestore[i].anagrafica());
+
+        }
+    }
+
+
+
+    //Metodo che permette di nascondere un contatto
+    public static void nascondiContatto(Contatto[] gestore, int contacontatti, Scanner sc) {
+
+        //Inserimento del nome del contatto che si intende nascondere
+        System.out.println("Inserisci il nome del contatto che vuoi nascondere: ");
+
+        String[] nome = sc.nextLine().split(" ");
+
+        //Ciclo for che scorre l'array fino a che trova la corrispondenza col nome
+        for (int i = 0; i < contacontatti; i++) {
+
+            if (gestore[i].nome.equals(nome[0])) {
+
+                System.out.println("Contatto nascosto:");
+
+                //Impostazione del tipo del contatto a nascosto
+                gestore[i].tipo = Tipologia.nascosto;
+
+                //Lettura della nuova anagrafica del contatto cambiato
+                System.out.println(gestore[i].anagrafica());
+
+                return;
+            }
+        }
+
+        System.out.println("Nessun contatto trovato con il nome inserito.");
+
+    }
+
+
+
+    //Metodo che permette di mostrare un contatto
+    public static void mostraContatto(Contatto[] gestore, int contacontatti, Scanner sc) {
+
+        //Inserimento del nome del contatto che si intende mostrare
+        System.out.println("Inserisci il nome del contatto che vuoi mostrare: ");
+
+        String[] nome = sc.nextLine().split(" ");
+
+        //Ciclo for che scorre l'array fino a che trova la corrispondenza col nome
+        for (int i = 0; i < contacontatti; i++) {
+
+            if (gestore[i].nome.equals(nome[0])) {
+
+                System.out.println("Contatto mostrato:");
+
+                //Impostazione del tipo del contatto a mostrato
+                gestore[i].tipo = Tipologia.mostrato;
+
+                //Lettura della nuova anagrafica del contatto cambiato
+                System.out.println(gestore[i].anagrafica());
+
+                return;
+            }
+        }
+
+        System.out.println("Nessun contatto trovato con il nome inserito.");
+
+    }
+
+
+
+    //Metodo che permette di inserire una nuova chiamata
+    public static Chiamate InserisciChiamate(Scanner sc) {
+
+        //Creazione di un nuova chiamata e inserimento dei suoi dati
+        Chiamate chiamate = new Chiamate();
+
+        System.out.println("Inserici il nome");
+        chiamate.nome = sc.nextLine();
+
+        System.out.println("Inserici il numero di telefono");
+        chiamate.numDiTelefono = sc.nextLine();
+
+        String[] opzioni = {"TipoContatto", "1-mostrato", "2-nascosto"};
+
+        int scelta;
+
+        //ciclo do-while che si ripete fino a che l'utente non sceglie una opzione corretta fra le due
+        do {
+
+            scelta = menu(opzioni, sc);
+
+            //switch case per far inserire la scelta dell'utente
+            switch (scelta) {
+
+                case 1 -> chiamate.tipo = Tipologia.mostrato;
+
+                case 2 -> chiamate.tipo = Tipologia.nascosto;
+
+            }
+
+        } while (scelta > 2 || scelta < 1);
+
+        return chiamate;
+    }
+
+
+
+    //Metodo che permette di eliminare una chiamata
+    public static void eliminaChiamate(Chiamate[] gestione, int contachiamate, Scanner sc) {
+
+        //Inserimento del nome della chiamata che si intende eliminare
+        System.out.println("Inserisci il nome della chiamata che vuoi eliminare: ");
+
+        String[] nome = sc.nextLine().split(" ");
+
+        //Ciclo for che scorre l'array fino a che trova la corrispondenza col nome
+        for (int i = 0; i < contachiamate; i++) {
+
+            if (gestione[i].nome.equals(nome[0])) {
+
+                System.out.println("Contatto eliminato:");
+
+                System.out.println(gestione[i].anagrafica());
+
+                //Impostazione della chiamata a null
+                gestione[i] = null;
+
+                return;
+            }
+        }
+
+        System.out.println("Nessuna chiamata trovata con il nome inserito.");
+
+    }
+
+
+
+    //Metodo che permette di visualizzare tutte le chiamate
+    public static void visualizzaChiamate(Chiamate[] gestione, int contachiamate) {
+
+        //Ciclo for che scorre l'array leggendo l'anagrafica di ogni chiamata disponibile
+        for (int i = 0; i < contachiamate; i++) {
+
+            System.out.println(gestione[i].anagrafica());
+
+        }
+    }
+}
