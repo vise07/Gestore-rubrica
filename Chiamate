@@ -1,0 +1,10 @@
+public class Chiamate {
+    public String nome;
+    public String numDiTelefono;
+    public Tipologia tipo;
+
+
+    public String anagrafica() {
+        return String.format("Nome: %s Telefono: %s Tipo: %s", nome, numDiTelefono, tipo);
+    }
+}
